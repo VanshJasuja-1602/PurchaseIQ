@@ -41,16 +41,39 @@ To feed the model its expected feature schema without complicating user interact
 
 ---
 
-## 🔒 Production Security Disclosure
+## 🔒 Production Security & Proxying
 
-> [!WARNING]
-> This application uses `VITE_DATABRICKS_TOKEN` directly in the browser configuration for demonstration and testing.
-> **For production deployments, do not expose API tokens in client-side bundles.**
-> Implement a backend proxy server to forward requests and inject authentication headers server-side.
+To keep your Databricks API token strictly private and avoid browser CORS blocks, PurchaseIQ features **built-in production serverless functions** that act as secure backend proxies:
+
+* **No Token Leakage**: The client browser calls `/api/predict` (a relative route) and does not need to download or handle the Databricks API token.
+* **Server-side Injection**: The hosting platform runs a serverless function that retrieves the secret token from the server-side environment and appends the `Authorization` header securely before forwarding the request to Databricks.
+* **Automatic Routing**: Setup is fully automated out-of-the-box for both **Vercel** and **Netlify**.
 
 ---
 
-## 💻 Quick Start
+## 🌐 Deployment Instructions
+
+### Option A: Deploying to Vercel
+Vercel automatically detects the serverless function located in `api/predict.js`.
+1. Push your repository to GitHub.
+2. Import the project into your **Vercel Dashboard**.
+3. Under **Project Settings** -> **Environment Variables**, add:
+   * **Key**: `DATABRICKS_TOKEN` (or `VITE_DATABRICKS_TOKEN`)
+   * **Value**: `<your_databricks_token>`
+4. Click **Deploy**. Vercel will automatically build the React Vite app and map the `/api/predict` route to the proxy function.
+
+### Option B: Deploying to Netlify
+Netlify automatically routes incoming requests to `/api/predict` to the handler in `netlify/functions/predict.js` via the configuration in `netlify.toml`.
+1. Push your repository to GitHub.
+2. Link the repository to your **Netlify Dashboard**.
+3. Under **Site configuration** -> **Environment variables**, add:
+   * **Key**: `DATABRICKS_TOKEN` (or `VITE_DATABRICKS_TOKEN`)
+   * **Value**: `<your_databricks_token>`
+4. Deploy the site.
+
+---
+
+## 💻 Local Development
 
 ### Prerequisites
 * Node.js (v18+)
@@ -65,16 +88,17 @@ npm install
 Create a `.env` file in the root directory (based on `.env.example`):
 ```env
 VITE_DATABRICKS_URL=/api/predict
-VITE_DATABRICKS_TOKEN=your_databricks_token_here
+VITE_DATABRICKS_TOKEN=<your_databricks_token>
 ```
 
 ### 3. Run Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:5173](http://localhost:5173) in your browser. The Vite dev server will use the proxy configuration in `vite.config.ts` to route requests to Databricks.
 
-### 4. Build for Production
+### 4. Build locally
+To verify production builds:
 ```bash
 npm run build
 ```

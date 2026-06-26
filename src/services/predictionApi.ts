@@ -14,26 +14,35 @@ import { extractPrediction } from '../utils/extractPrediction';
  * ============================================================================
  */
 
-const databricksUrl = import.meta.env.VITE_DATABRICKS_URL;
-const databricksToken = import.meta.env.VITE_DATABRICKS_TOKEN;
+const databricksUrl = import.meta.env.VITE_DATABRICKS_URL || '/api/predict';
+const databricksToken = import.meta.env.VITE_DATABRICKS_TOKEN || '';
 
 export async function predictPurchase(payload: DatabricksPayload): Promise<PredictionResult> {
   if (!databricksUrl) {
-    throw new Error("Databricks Endpoint URL is missing. Set VITE_DATABRICKS_URL in your .env file.");
+    throw new Error("Databricks Endpoint URL is missing. Set VITE_DATABRICKS_URL in your environment.");
   }
-  if (!databricksToken) {
-    throw new Error("Databricks Authentication Token is missing. Set VITE_DATABRICKS_TOKEN in your .env file.");
+
+  // If the URL is absolute (external), we need the token on the client side.
+  // If it's a relative proxy path (like /api/predict), the proxy server injects the token.
+  const isRelative = databricksUrl.startsWith('/');
+  if (!isRelative && !databricksToken) {
+    throw new Error("Databricks Authentication Token is missing. Set VITE_DATABRICKS_TOKEN in your environment.");
   }
 
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (databricksToken) {
+      headers['Authorization'] = `Bearer ${databricksToken}`;
+    }
+
     const response = await axios.post(
       databricksUrl,
       payload,
       {
-        headers: {
-          'Authorization': `Bearer ${databricksToken}`,
-          'Content-Type': 'application/json',
-        },
+        headers,
         timeout: 120000, // 120 seconds timeout to accommodate cold starts
       }
     );
