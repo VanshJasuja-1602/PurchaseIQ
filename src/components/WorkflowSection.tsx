@@ -139,12 +139,7 @@ export default function WorkflowSection() {
           })}
         </div>
 
-        {/* Security / Dev Note */}
-        <div className="mt-16 text-center max-w-xl mx-auto">
-          <p className="text-xs font-bold text-slate-500 bg-amber-50 border border-amber-100 p-4 rounded-2xl shadow-sm text-amber-800 flex items-center justify-center gap-2">
-            ⚠️ Security Note: Frontend coordinates feature preparation and displays JSON payload logs. For production deployment, route traffic through a secure API proxy.
-          </p>
-        </div>
+
 
       </div>
     </section>
