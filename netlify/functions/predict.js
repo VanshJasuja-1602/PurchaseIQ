@@ -21,8 +21,9 @@ export const handler = async (event, context) => {
     };
   }
 
-  // Get token from secure server-side environment variables
+  // Get token and url from secure server-side environment variables
   const token = process.env.DATABRICKS_TOKEN || process.env.VITE_DATABRICKS_TOKEN;
+  const url = process.env.DATABRICKS_URL || process.env.VITE_DATABRICKS_URL || 'https://dbc-0907a775-590e.cloud.databricks.com/serving-endpoints/online-shoppers-endpoint/invocations';
   
   if (!token) {
     return {
@@ -36,7 +37,7 @@ export const handler = async (event, context) => {
   try {
     const payload = JSON.parse(event.body || '{}');
     const response = await axios.post(
-      'https://dbc-0907a775-590e.cloud.databricks.com/serving-endpoints/online-shoppers-endpoint/invocations',
+      url,
       payload,
       {
         headers: {
