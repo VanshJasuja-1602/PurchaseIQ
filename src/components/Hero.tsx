@@ -14,7 +14,7 @@ interface CounterProps {
 
 function AnimatedCounter({ value, duration = 1.5, suffix = '' }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-10px" });
 
   useEffect(() => {
     if (!isInView) return;
