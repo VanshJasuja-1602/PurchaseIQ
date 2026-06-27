@@ -17,7 +17,11 @@ import { extractPrediction } from '../utils/extractPrediction';
 const databricksUrl = import.meta.env.VITE_DATABRICKS_URL || '/api/predict';
 const databricksToken = import.meta.env.VITE_DATABRICKS_TOKEN || '';
 
-export async function predictPurchase(payload: DatabricksPayload): Promise<PredictionResult> {
+export async function predictPurchase(
+  payload: DatabricksPayload,
+  retries = 3,
+  delayMs = 1500
+): Promise<PredictionResult> {
   if (!databricksUrl) {
     throw new Error("Databricks Endpoint URL is missing. Set VITE_DATABRICKS_URL in your environment.");
   }
@@ -29,45 +33,60 @@ export async function predictPurchase(payload: DatabricksPayload): Promise<Predi
     throw new Error("Databricks Authentication Token is missing. Set VITE_DATABRICKS_TOKEN in your environment.");
   }
 
-  try {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
 
-    if (databricksToken) {
-      headers['Authorization'] = `Bearer ${databricksToken}`;
-    }
-
-    const response = await axios.post(
-      databricksUrl,
-      payload,
-      {
-        headers,
-        timeout: 120000, // 120 seconds timeout to accommodate cold starts
-      }
-    );
-
-    return extractPrediction(response.data);
-  } catch (error: any) {
-    console.error("Databricks API Error:", error);
-    
-    // Extract a readable error message for the collapsible developer panel
-    let detailedError = "No additional error details available.";
-    if (error.response) {
-      // Server responded with non-2xx code
-      detailedError = `Status: ${error.response.status}\nData: ${JSON.stringify(error.response.data, null, 2)}`;
-    } else if (error.request) {
-      // Request was made but no response received
-      detailedError = "Request was sent but no response was received from Databricks. Check CORS configurations, URL accuracy, or network status.";
-    } else {
-      // Something happened setting up the request
-      detailedError = error.message;
-    }
-    
-    throw {
-      message: "Prediction service is currently unavailable. Please check your endpoint URL or token.",
-      details: detailedError,
-      payload: JSON.stringify(payload, null, 2),
-    };
+  if (databricksToken) {
+    headers['Authorization'] = `Bearer ${databricksToken}`;
   }
+
+  let lastError: any = null;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      if (attempt > 0) {
+        console.warn(`Databricks API attempt ${attempt} failed. Retrying in ${delayMs}ms (retry ${attempt}/${retries})...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+
+      const response = await axios.post(
+        databricksUrl,
+        payload,
+        {
+          headers,
+          timeout: 120000, // 120 seconds timeout to accommodate cold starts
+        }
+      );
+
+      return extractPrediction(response.data);
+    } catch (error: any) {
+      console.error(`Databricks API Error (Attempt ${attempt + 1}/${retries + 1}):`, error);
+      lastError = error;
+      
+      // If the error is a client-side invalid request or auth issue, fail fast instead of retrying
+      if (error.response && (error.response.status === 400 || error.response.status === 401 || error.response.status === 403)) {
+        break;
+      }
+    }
+  }
+
+  // Extract a readable error message for the collapsible developer panel
+  let detailedError = "No additional error details available.";
+  if (lastError.response) {
+    // Server responded with non-2xx code
+    detailedError = `Status: ${lastError.response.status}\nData: ${JSON.stringify(lastError.response.data, null, 2)}`;
+  } else if (lastError.request) {
+    // Request was made but no response received
+    detailedError = "Request was sent but no response was received from Databricks. Check CORS configurations, URL accuracy, or network status.";
+  } else {
+    // Something happened setting up the request
+    detailedError = lastError.message;
+  }
+  
+  throw {
+    message: "Prediction service is currently unavailable. Please check your endpoint URL or token.",
+    details: detailedError,
+    payload: JSON.stringify(payload, null, 2),
+  };
 }

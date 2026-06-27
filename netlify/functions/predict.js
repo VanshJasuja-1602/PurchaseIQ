@@ -34,40 +34,58 @@ export const handler = async (event, context) => {
     };
   }
 
-  try {
-    const payload = JSON.parse(event.body || '{}');
-    const response = await axios.post(
-      url,
-      payload,
-      {
+  const payload = JSON.parse(event.body || '{}');
+  const retries = 3;
+  const delayMs = 1500;
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      if (attempt > 0) {
+        console.warn(`Databricks Netlify proxy attempt ${attempt} failed. Retrying in ${delayMs}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+
+      const response = await axios.post(
+        url,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 120000, // 120 second timeout for cold starts
+        }
+      );
+
+      return {
+        statusCode: 200,
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        timeout: 120000, // 120 second timeout for cold starts
+        body: JSON.stringify(response.data),
+      };
+    } catch (error) {
+      console.error(`Databricks Netlify proxy error (Attempt ${attempt + 1}/${retries + 1}):`, error.message);
+      lastError = error;
+
+      // Fail fast on client/auth errors (400, 401, 403)
+      if (error.response && (error.response.status === 400 || error.response.status === 401 || error.response.status === 403)) {
+        break;
       }
-    );
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(response.data),
-    };
-  } catch (error) {
-    console.error('Databricks proxy error:', error.message);
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { error: error.message };
-
-    return {
-      statusCode: status,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    };
+    }
   }
+
+  const status = lastError.response?.status || 500;
+  const data = lastError.response?.data || { error: lastError.message };
+
+  return {
+    statusCode: status,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  };
 };

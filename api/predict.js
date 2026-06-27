@@ -23,27 +23,45 @@ export default async function handler(req, res) {
     });
   }
 
-  try {
-    const response = await axios.post(
-      url,
-      req.body,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 120000, // 120 second timeout for cold starts
-      }
-    );
+  const retries = 3;
+  const delayMs = 1500;
+  let lastError = null;
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(200).json(response.data);
-  } catch (error) {
-    console.error('Databricks proxy error:', error.message);
-    const status = error.response?.status || 500;
-    const data = error.response?.data || { error: error.message };
-    
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(status).json(data);
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      if (attempt > 0) {
+        console.warn(`Databricks serverless proxy attempt ${attempt} failed. Retrying in ${delayMs}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+
+      const response = await axios.post(
+        url,
+        req.body,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 120000, // 120 second timeout for cold starts
+        }
+      );
+
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      return res.status(200).json(response.data);
+    } catch (error) {
+      console.error(`Databricks proxy error (Attempt ${attempt + 1}/${retries + 1}):`, error.message);
+      lastError = error;
+
+      // Fail fast on client/auth errors (400, 401, 403)
+      if (error.response && (error.response.status === 400 || error.response.status === 401 || error.response.status === 403)) {
+        break;
+      }
+    }
   }
+
+  const status = lastError.response?.status || 500;
+  const data = lastError.response?.data || { error: lastError.message };
+  
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  return res.status(status).json(data);
 }
