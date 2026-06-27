@@ -103,6 +103,40 @@ export default function ModelInfo() {
                 <p className="text-xs font-semibold text-slate-500 mt-1">Excellent class separation capacity, indicating that the model successfully distinguishes buyers from browsers.</p>
               </div>
             </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="glass-panel p-6 border border-slate-200/60 flex items-center gap-6"
+            >
+              <div className="relative flex items-center justify-center w-20 h-20 bg-pink-50 rounded-full flex-shrink-0 text-pink-650">
+                <span className="text-2xl font-extrabold">90%</span>
+                <div className="absolute inset-0 rounded-full border border-dashed border-pink-300 animate-[spin_15s_linear_infinite]" />
+              </div>
+              <div className="text-left">
+                <h4 className="font-extrabold text-slate-800 text-base">Model Accuracy</h4>
+                <p className="text-xs font-semibold text-slate-500 mt-1">Overall classification accuracy across test validation data for predicting checkout conversions.</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="glass-panel p-6 border border-slate-200/60 flex items-center gap-6"
+            >
+              <div className="relative flex items-center justify-center w-20 h-20 bg-cyan-50 rounded-full flex-shrink-0 text-cyan-650">
+                <span className="text-2xl font-extrabold">XGB</span>
+                <div className="absolute inset-0 rounded-full border border-dashed border-cyan-300 animate-[spin_30s_linear_infinite]" />
+              </div>
+              <div className="text-left">
+                <h4 className="font-extrabold text-slate-800 text-base">Model Algorithm</h4>
+                <p className="text-xs font-semibold text-slate-500 mt-1">Extreme Gradient Boosting (XGBoost) classifier selected for its superior tabular performance.</p>
+              </div>
+            </motion.div>
           </div>
 
           {/* Right Column: Grid cards */}
