@@ -64,6 +64,16 @@ export default function AboutSection() {
             <span>Know About Developer</span>
             <ExternalLink className="w-4 h-4 text-white/95" />
           </a>
+
+          <a
+            href="https://drive.google.com/file/d/1XIWwWP4mjzlS8w1XIl4R6B_qSpNSXYJy/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-premium hover:shadow-glow-indigo transition-all duration-300 hover:scale-105 w-60 sm:w-auto text-center font-bold"
+          >
+            <span>Report</span>
+            <ExternalLink className="w-4 h-4 text-white/95" />
+          </a>
         </div>
 
         {/* Footer */}
@@ -84,10 +94,6 @@ export default function AboutSection() {
             </a>
             <a href="https://www.linkedin.com/in/vansh-jasuja-93544a344" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
               LinkedIn
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <a href="https://drive.google.com/file/d/1XIWwWP4mjzlS8w1XIl4R6B_qSpNSXYJy/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
-              Report
               <ExternalLink className="w-3 h-3" />
             </a>
             <a href="https://databricks.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
