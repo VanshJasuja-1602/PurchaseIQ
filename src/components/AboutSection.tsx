@@ -43,8 +43,21 @@ export default function AboutSection() {
           </p>
         </div>
 
+        {/* Model Preview Button */}
+        <div className="mt-12 flex justify-center">
+          <a
+            href="https://www.kaggle.com/code/vanshjasuja16/online-shoppers-purchasing-intention"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-premium hover:shadow-glow-indigo transition-all duration-300 hover:scale-105"
+          >
+            <span>Model Preview</span>
+            <ExternalLink className="w-4 h-4 text-white/95" />
+          </a>
+        </div>
+
         {/* Footer */}
-        <div className="mt-24 pt-8 border-t border-slate-200/60 max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div className="mt-16 pt-8 border-t border-slate-200/60 max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
           <div className="text-left">
             <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Purchase<span className="text-slate-800 font-medium">IQ</span>
