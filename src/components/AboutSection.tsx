@@ -67,13 +67,17 @@ export default function AboutSection() {
             </p>
           </div>
 
-          <div className="flex items-center gap-6 text-slate-500">
+          <div className="flex flex-wrap items-center gap-6 text-slate-500 justify-center sm:justify-start">
             <a href="https://github.com/VanshJasuja-1602" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
               GitHub
               <ExternalLink className="w-3 h-3" />
             </a>
             <a href="https://www.linkedin.com/in/vansh-jasuja-93544a344" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
               LinkedIn
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <a href="https://vanshjasuja16.netlify.app/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
+              Know About Developer
               <ExternalLink className="w-3 h-3" />
             </a>
             <a href="https://drive.google.com/file/d/1XIWwWP4mjzlS8w1XIl4R6B_qSpNSXYJy/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-indigo-650 transition-colors text-xs font-bold uppercase tracking-wider">
