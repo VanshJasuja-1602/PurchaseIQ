@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -66,11 +66,18 @@ export default function PredictionForm({ onSubmit, isLoading, initialValues }: P
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<RawFormInput>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      reset(initialValues);
+    }
+  }, [initialValues, reset]);
 
   // Watch values for the real-time AI input transformation preview
   const watchedValues = watch();

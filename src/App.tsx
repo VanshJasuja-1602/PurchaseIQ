@@ -14,6 +14,7 @@ import ModelInfo from './components/ModelInfo';
 import WorkflowSection from './components/WorkflowSection';
 import AboutSection from './components/AboutSection';
 import AnimatedBackground from './components/AnimatedBackground';
+import PredictionHistory from './components/PredictionHistory';
 
 // Types & Services
 import type { RawFormInput, DatabricksPayload, PredictionResult } from './types/prediction';
@@ -28,6 +29,15 @@ export default function App() {
   const [formValues, setFormValues] = useState<RawFormInput | null>(null);
   const [error, setError] = useState<{ message: string; details: string } | null>(null);
   const [showErrorDetails, setShowErrorDetails] = useState(false);
+  const [history, setHistory] = useState<Array<{
+    id: string;
+    timestamp: string;
+    formValues: RawFormInput;
+    result: PredictionResult;
+  }>>(() => {
+    const saved = localStorage.getItem('purchaseiq_history');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   // Smooth scroll helper
   const handleNavClick = (sectionId: string) => {
@@ -92,6 +102,19 @@ export default function App() {
       setResult(response);
       toast.success('Purchase intent analysis completed successfully!');
       
+      // Save session history item
+      const newHistoryItem = {
+        id: Math.random().toString(36).substring(2, 11),
+        timestamp: new Date().toLocaleString(),
+        formValues: data,
+        result: response,
+      };
+      setHistory((prev) => {
+        const updated = [newHistoryItem, ...prev];
+        localStorage.setItem('purchaseiq_history', JSON.stringify(updated));
+        return updated;
+      });
+
       // Auto-scroll slightly to the result card for premium UX
       setTimeout(() => {
         const predictionEl = document.getElementById('prediction');
@@ -124,6 +147,36 @@ export default function App() {
     if (formValues) {
       handlePredict(formValues);
     }
+  };
+
+  const handleLoadHistoryInputs = (historicValues: RawFormInput) => {
+    setFormValues(historicValues);
+    setResult(null);
+    setError(null);
+    
+    // Smooth scroll back to form
+    const predictionEl = document.getElementById('prediction');
+    if (predictionEl) {
+      window.scrollTo({
+        top: predictionEl.offsetTop - 90,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleClearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('purchaseiq_history');
+    toast.success('Prediction history cleared.');
+  };
+
+  const handleDeleteHistoryItem = (id: string) => {
+    setHistory((prev) => {
+      const updated = prev.filter((item) => item.id !== id);
+      localStorage.setItem('purchaseiq_history', JSON.stringify(updated));
+      return updated;
+    });
+    toast.success('History item deleted.');
   };
 
   return (
@@ -257,6 +310,14 @@ export default function App() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Prediction History Section */}
+        <PredictionHistory 
+          history={history} 
+          onLoadInputs={handleLoadHistoryInputs} 
+          onClearHistory={handleClearHistory}
+          onDeleteHistoryItem={handleDeleteHistoryItem}
+        />
 
         {/* Workflow Section */}
         <WorkflowSection />

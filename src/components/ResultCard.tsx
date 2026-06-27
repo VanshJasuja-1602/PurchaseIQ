@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Check, AlertTriangle, RefreshCw, FileCode, Copy, Sparkles, Tag, 
-  ShoppingBag, HelpCircle, ArrowUpRight, BarChart, Percent, Eye, EyeOff 
+  Check, AlertTriangle, RefreshCw, FileCode, Copy, Sparkles, Eye, EyeOff 
 } from 'lucide-react';
 import type { PredictionResult, DatabricksPayload } from '../types/prediction';
 
@@ -47,50 +46,7 @@ export default function ResultCard({ result, payload, onReset }: ResultCardProps
     };
   });
 
-  // Recommendation Data based on predictions
-  const successRecommendations = [
-    {
-      title: "Prioritize Conversion",
-      desc: "Implement exit-intent popups with standard coupon codes or highlight free-shipping thresholds to secure the purchase.",
-      icon: ShoppingBag,
-      color: "from-emerald-500 to-teal-500",
-    },
-    {
-      title: "Offer Limited-Time Deal",
-      desc: "Trigger a scarcity countdown timer on their cart or a special discount that expires in 15 minutes.",
-      icon: Tag,
-      color: "from-indigo-500 to-purple-500",
-    },
-    {
-      title: "Recommend Related Products",
-      desc: "Present premium cross-sell options on the cart page based on their active product viewing categories.",
-      icon: Sparkles,
-      color: "from-pink-500 to-rose-500",
-    }
-  ];
 
-  const warningRecommendations = [
-    {
-      title: "Improve Page Value",
-      desc: "Guide this visitor to higher-value product listing pages or promotional banners via smart internal links.",
-      icon: BarChart,
-      color: "from-amber-500 to-orange-500",
-    },
-    {
-      title: "Reduce Exit Rate",
-      desc: "Trigger a helpful interactive chat assistant or show a FAQ popup when exit behaviors are detected.",
-      icon: HelpCircle,
-      color: "from-indigo-500 to-cyan-500",
-    },
-    {
-      title: "Show Personalized Offer",
-      desc: "Present a 'Welcome back' 10% coupon or ask if they need assistance finding a specific category size.",
-      icon: Percent,
-      color: "from-pink-500 to-red-500",
-    }
-  ];
-
-  const recommendations = isSuccess ? successRecommendations : warningRecommendations;
 
   // SVG Gauge variables
   const radius = 50;
@@ -298,38 +254,7 @@ Content-Type: application/json`}
 
       </motion.div>
 
-      {/* Recommendations Cards Section */}
-      <div className="text-left mt-16">
-        <h3 className="text-2xl font-extrabold text-slate-900 mb-8 text-center flex items-center justify-center gap-2">
-          <Sparkles className="w-6 h-6 text-indigo-500" />
-          Recommended Conversion Strategies
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recommendations.map((rec, i) => {
-            const Icon = rec.icon;
-            return (
-              <motion.div
-                key={rec.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="glass-panel p-6 border border-slate-200/50 hover:shadow-premium-hover card-hover-lift hover:border-indigo-200 transition-all duration-300 flex flex-col items-start"
-              >
-                <div className={`p-3 rounded-2xl bg-gradient-to-tr ${rec.color} text-white shadow-sm mb-5`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h4 className="font-extrabold text-slate-900 text-lg mb-2">{rec.title}</h4>
-                <p className="text-sm font-medium text-slate-500 leading-relaxed">{rec.desc}</p>
-                <button className="flex items-center gap-1 mt-4 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-wider">
-                  Implement Strategy
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+
     </div>
   );
 }
