@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://purchaseiq.netlify.app/" target="_blank">
-    <img src="https://img.shields.io/badge/%E2%9A%A1_Live_Preview-Visit_Now-00DF89?style=for-the-badge&logo=netlify&logoColor=white" />
+    <img src="assets/live_demo_banner_v1.png" alt="Visit Live Demo" width="50%" />
   </a>
 </p>
 
