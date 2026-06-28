@@ -9,14 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://purchaseiq.netlify.app/">
-    <img src="https://img.shields.io/badge/Live_Demo-Visit-success?style=for-the-badge" />
-  </a>
-  <a href="https://github.com/yourusername/PurchaseIQ">
-    <img src="https://img.shields.io/badge/Source_Code-GitHub-black?style=for-the-badge&logo=github" />
-  </a>
-  <a href="https://your-model-api-docs.com">
-    <img src="https://img.shields.io/badge/Model_API-Databricks-orange?style=for-the-badge" />
+  <a href="https://purchaseiq.netlify.app/" target="_blank">
+    <img src="https://img.shields.io/badge/%E2%9A%A1_Live_Preview-Visit_Now-00DF89?style=for-the-badge&logo=netlify&logoColor=white" />
   </a>
 </p>
 
