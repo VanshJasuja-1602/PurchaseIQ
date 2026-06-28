@@ -1,7 +1,7 @@
 # PurchaseIQ - Real-Time Shopper Purchase Prediction
 
 <p align="center">
-  <img src="assets/dashboard.png" alt="PurchaseIQ Dashboard Demo" width="100%">
+  <img src="assets/dashboard_actual.png" alt="PurchaseIQ Dashboard Demo" width="100%">
 </p>
 
 <p align="center">
