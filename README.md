@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://purchaseiq.netlify.app/" target="_blank">
-    <img src="assets/live_demo_banner_v1.png" alt="Visit Live Demo" width="50%" />
+    <img src="assets/live_demo_banner_v2.png" alt="Visit Live Demo" width="60%" />
   </a>
 </p>
 
