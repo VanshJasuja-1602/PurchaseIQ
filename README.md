@@ -175,8 +175,6 @@ npm run build
 
 ## Deployment
 
-4. Deploy
-
 ---
 
 ### Netlify
